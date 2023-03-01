@@ -68,7 +68,9 @@ void setup()
   dsp.setParamValue("gateSynth", 1);
   dsp.setParamValue("gateDrums", 1);
   dsp.setParamValue("gateGuitar", 1);
+  dsp.setParamValue("outGain", 1);
   dsp.setParamValue("sl", 0.1);
+  dsp.setParamValue("filterFreq", 1000);
   for (int i = 0; i < MIDI_RANGE; i++)
   {
     playingNote[i] = -1;
@@ -234,21 +236,54 @@ void processMIDI(byte type, byte data1, byte data2)
       break;
     case 52:
       instrumentPlaying = 0;
-      // dsp.setParamValue("gateSynth", 1);
-      // dsp.setParamValue("gateDrums", 0);
-      // dsp.setParamValue("gateGuitar", 0);
       break;
     case 53:
       instrumentPlaying = 1;
-      // dsp.setParamValue("gateSynth", 0);
-      // dsp.setParamValue("gateDrums", 1);
-      // dsp.setParamValue("gateGuitar", 0);
       break;
     case 54:
       instrumentPlaying = 2;
-      // dsp.setParamValue("gateSynth", 0);
-      // dsp.setParamValue("gateDrums", 0);
-      // dsp.setParamValue("gateGuitar", 1);
+      break;
+    case 93:
+      dsp.setParamValue("gainSynth", mapfloat(inputValue, 0, 127, 0, 1));
+      break;
+    case 18:
+      dsp.setParamValue("gainDrums", mapfloat(inputValue, 0, 127, 0, 1));
+      break;
+    case 19:
+      dsp.setParamValue("gainGuitar", mapfloat(inputValue, 0, 127, 0, 1));
+      break;
+    case 74:
+      dsp.setParamValue("filterFreq", mapfloat(inputValue, 0, 127, 500, 5000));
+      break;
+    case 73:
+      dsp.setParamValue("at", mapfloat(inputValue, 0, 127, 0, 1));
+      break;
+    case 75:
+      dsp.setParamValue("dt", mapfloat(inputValue, 0, 127, 0, 1));
+      break;
+    case 79:
+      dsp.setParamValue("sl", mapfloat(inputValue, 0, 127, 0, 1));
+      break;
+    case 72:
+      dsp.setParamValue("rt", mapfloat(inputValue, 0, 127, 0, 1));
+      break;
+    case 76:
+      dsp.setParamValue("modfreq1", mapfloat(inputValue, 0, 127, 0.5, 75));
+      break;
+    case 77:
+      dsp.setParamValue("index1", mapfloat(inputValue, 0, 127, 0, 20));
+      break;
+    case 1:
+    if (instrumentPlaying == 0) {
+      dsp.setParamValue("pitch", mapfloat(inputValue, 0, 127, 0.1, 2));
+
+    } else if (instrumentPlaying == 2) {
+
+      dsp.setParamValue("bend", mapfloat(inputValue, 0, 127, -2, 2));
+    }
+      break;
+    case 71:
+      dsp.setParamValue("pluckPosition", mapfloat(inputValue, 0, 127, 0, 1));
       break;
 
     default:
@@ -371,7 +406,6 @@ void recordLoop(int index)
     }
     else
     {
-      dsp.setParamValue("gateSynth7", 0);
       if (index == 0)
       {
         record1[record_index] = -1;
@@ -385,6 +419,7 @@ void recordLoop(int index)
     delay(DELAY_VALUE);
     record_index++;
   }
+  dsp.setParamValue("gateSynth7", 0);
 }
 
 void playLoop(int index)
