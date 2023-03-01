@@ -2,7 +2,7 @@
 #include "myDsp.h"
 
 const int MIDI_RANGE = 128;
-const int POLY_RANGE = 3;
+const int POLY_RANGE = 4;
 const int RECORD_RANGE = 4800;
 const int DELAY_VALUE = 5;
 
@@ -14,23 +14,31 @@ AudioConnection patchCord1(dsp, 0, out, 1);
 bool playing, polyphonic, loopPlaying;
 int numberOfNotes;
 int currentNoteOrder;
-int loop_index;
-int recording_size;
+int loop1_index;
+int loop2_index;
+int recording1_size;
+int recording2_size;
 int playingNote[MIDI_RANGE];
-char freq1[10] = "freq1";
-char freq2[10] = "freq2";
-char freq3[10] = "freq3";
-char freq4[10] = "freq4";
-char gate1[10] = "gate1";
-char gate2[10] = "gate2";
-char gate3[10] = "gate3";
-char gate4[10] = "gate4";
+char freq1[32] = "freqSynth1";
+char freq2[32] = "freqSynth2";
+char freq3[32] = "freqSynth3";
+char freq4[32] = "freqSynth4";
+char freq5[32] = "freqSynth5";
+char freq6[32] = "freqSynth6";
+char freq7[32] = "freqSynth7";
+char gate1[32] = "gateSynth1";
+char gate2[32] = "gateSynth2";
+char gate3[32] = "gateSynth3";
+char gate4[32] = "gateSynth4";
+char gate5[32] = "gateSynth5";
+char gate6[32] = "gateSynth6";
+char gate7[32] = "gateSynth7";
 char *freqs[POLY_RANGE];
 char *gates[POLY_RANGE];
 int record1[RECORD_RANGE];
 int record2[RECORD_RANGE];
 int instrumentsOnLoops[2] = {-1, -1};
-int instrumentPlaying = -1;
+int instrumentPlaying;
 byte *midiInfo;
 
 void setup()
@@ -42,7 +50,7 @@ void setup()
   loopPlaying = false;
   numberOfNotes = 0;
   currentNoteOrder = 0;
-  loop_index = 0;
+  loop1_index = 0;
   Serial.begin(9600);
   freqs[0] = freq1;
   freqs[1] = freq2;
@@ -53,7 +61,11 @@ void setup()
   gates[2] = gate3;
   gates[3] = gate4;
   polyphonic = true;
-  recording_size = 0;
+  recording1_size = 0;
+  recording2_size = 0;
+  instrumentPlaying = 0;
+  dsp.setParamValue("gateSynth", 1);
+  dsp.setParamValue("sl", 0.1);
   for (int i = 0; i < MIDI_RANGE; i++)
   {
     playingNote[i] = -1;
@@ -61,12 +73,20 @@ void setup()
   for (int i = 0; i < RECORD_RANGE; i++)
   {
     record1[i] = -1;
+    record2[i] = -1;
   }
-  dsp.setParamValue("gate", 1);
+  // Serial.println("Setup done");
 }
 
 void loop()
 {
+  dsp.setParamValue("gateDrums1", 0);
+  dsp.setParamValue("gateDrums2", 0);
+  dsp.setParamValue("gateDrums3", 0);
+  dsp.setParamValue("gateDrums4", 0);
+  dsp.setParamValue("gateDrums5", 0);
+  dsp.setParamValue("gateDrums6", 0);
+  dsp.setParamValue("gate", 0);
   byte type, data1, data2;
   if (usbMIDI.read())
   {
@@ -80,7 +100,8 @@ void loop()
   if (loopPlaying)
   {
     playLoop();
-    loop_index = (loop_index + 1) % recording_size;
+    loop1_index = (loop1_index + 1) % recording1_size;
+    loop2_index = (loop2_index + 1) % recording2_size;
   }
   delay(DELAY_VALUE);
 }
@@ -118,22 +139,40 @@ void processMIDI(byte type, byte data1, byte data2)
     // Serial.println("Note on");
     int midiNote = int(data1);
     float noteFrequency = getFrequencyFromMidi(midiNote);
-    dsp.setParamValue(freqs[currentNoteOrder], noteFrequency);
-    dsp.setParamValue(gates[currentNoteOrder], 1.0);
-    playingNote[midiNote] = currentNoteOrder;
-    numberOfNotes++;
-    Serial.println(currentNoteOrder);
-    if (polyphonic)
+    if (instrumentPlaying == 0)
     {
+      Serial.println(currentNoteOrder);
+      Serial.println(freqs[currentNoteOrder]);
+      dsp.setParamValue(freqs[currentNoteOrder], noteFrequency);
+      Serial.println(currentNoteOrder);
+      dsp.setParamValue(gates[currentNoteOrder], 1.0);
+      Serial.println(currentNoteOrder);
+      playingNote[midiNote] = currentNoteOrder;
+      numberOfNotes++;
+      Serial.println(currentNoteOrder);
       currentNoteOrder = (currentNoteOrder + 1) % POLY_RANGE;
     }
-    else
+    else if (instrumentPlaying == 1)
     {
-      for (int i = 0; i < MIDI_RANGE; i++)
+      switch (midiNote)
       {
-        if (playingNote[i] != 0 && i != midiNote)
-          playingNote[i] = -1;
+      case 60:
+        dsp.setParamValue("gateDrums3", 1);
+        break;
+      case 62:
+        dsp.setParamValue("gateDrums5", 1);
+        break;
+      case 64:
+        dsp.setParamValue("gateDrums1", 1);
+        break;
+      default:
+        break;
       }
+    }
+    else if (instrumentPlaying == 2)
+    {
+      dsp.setParamValue("freq", noteFrequency);
+      dsp.setParamValue("gate", 1);
     }
   }
   else if (type == usbMIDI.ControlChange)
@@ -150,20 +189,51 @@ void processMIDI(byte type, byte data1, byte data2)
     case 20:
       if (inputValue == 127)
       {
-        recordLoop();
+        recordLoop(0);
+      }
+    case 24:
+      if (inputValue == 127)
+      {
+        recordLoop(1);
       }
       break;
     case 21:
       if (inputValue == 127)
       {
-        loop_index = 0;
+        loop1_index = 0;
         loopPlaying = true;
       }
       else if (inputValue == 0)
       {
         loopPlaying = false;
-        dsp.setParamValue("gate4", 0);
+        dsp.setParamValue("gateSynth5", 0);
       }
+      break;
+    case 25:
+      if (inputValue == 127) {
+        loop2_index = 0;
+        loopPlaying = true;
+      } else if (inputValue == 0) {
+        loopPlaying = false;
+        dsp.setParamValue("gateSynth5", 0);
+      }
+    case 52:
+      instrumentPlaying = 0;
+      dsp.setParamValue("gateSynth", 1);
+      dsp.setParamValue("gateDrums", 0);
+      dsp.setParamValue("gateGuitar", 0);
+      break;
+    case 53:
+      instrumentPlaying = 1;
+      dsp.setParamValue("gateSynth", 0);
+      dsp.setParamValue("gateDrums", 1);
+      dsp.setParamValue("gateGuitar", 0);
+      break;
+    case 54:
+      instrumentPlaying = 2;
+      dsp.setParamValue("gateSynth", 0);
+      dsp.setParamValue("gateDrums", 0);
+      dsp.setParamValue("gateGuitar", 1);
       break;
 
     default:
@@ -185,11 +255,18 @@ byte *getMidiInput()
   return res;
 }
 
-void recordLoop()
+void recordLoop(int index)
 {
-  for (int i = 0; i < recording_size; i++)
+  for (int i = 0; i < recording1_size; i++)
   {
-    record1[i] = -1;
+    if (index == 0)
+    {
+      record1[i] = -1;
+    }
+    else
+    {
+      record2[i] = -1;
+    }
   }
   polyphonic = false;
   bool playingNote = false;
@@ -218,7 +295,10 @@ void recordLoop()
         int inputValue = int(midiInfo[2]);
         if (control == 20)
         {
-          recording_size = record_index;
+          recording1_size = record_index;
+          recording = false;
+        } else if (control == 24) {
+          recording2_size = record_index;
           recording = false;
         }
       }
@@ -230,37 +310,62 @@ void recordLoop()
       // int midiNote = int(midiInfo[1]);
       Serial.println(currentNotePlaying);
       float noteFrequency = getFrequencyFromMidi(currentNotePlaying);
-      dsp.setParamValue("freq4", noteFrequency);
-      dsp.setParamValue("gate4", 1.0);
+      dsp.setParamValue("freqSynth5", noteFrequency);
+      dsp.setParamValue("gateSynth5", 1.0);
 
-      record1[record_index] = currentNotePlaying;
+      if (index == 0)
+      {
+        record1[record_index] = currentNotePlaying;
+      }
+      else
+      {
+        record2[record_index] = currentNotePlaying;
+      }
     }
     else
     {
-      dsp.setParamValue("gate4", 0);
+      dsp.setParamValue("gateSynth5", 0);
       Serial.println(-1);
-      record1[loop_index] = -1;
+      if (index == 0)
+      {
+        record1[record_index] = -1;
+      }
+      else
+      {
+        record2[record_index] = -1;
+      }
     }
     delay(DELAY_VALUE);
     record_index++;
   }
-  dsp.setParamValue("gate4", 0);
+  dsp.setParamValue("gateSynth5", 0);
   polyphonic = true;
 }
 
 void playLoop()
 {
-  Serial.println(record1[loop_index]);
-  if (record1[loop_index] != -1)
+  Serial.println(record1[loop1_index]);
+  if (record1[loop1_index] != -1)
   {
-    float frequency = getFrequencyFromMidi(record1[loop_index]);
-    dsp.setParamValue("freq4", frequency);
-    dsp.setParamValue("gate4", 1.0);
+    float frequency = getFrequencyFromMidi(record1[loop1_index]);
+    dsp.setParamValue("freqSynth5", frequency);
+    dsp.setParamValue("gatesynth5", 1.0);
   }
   else
   {
-    dsp.setParamValue("gate4", 0.0);
+    dsp.setParamValue("gateSynth5", 0.0);
   }
+  if (record2[loop2_index] != -1)
+  {
+    float frequency = getFrequencyFromMidi(record2[loop2_index]);
+    dsp.setParamValue("freqSynth6", frequency);
+    dsp.setParamValue("gatesynth6", 1.0);
+  }
+  else
+  {
+    dsp.setParamValue("gateSynth6", 0.0);
+  }
+
 }
 
 float getFrequencyFromMidi(float d)
