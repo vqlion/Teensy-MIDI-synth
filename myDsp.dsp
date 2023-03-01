@@ -4,16 +4,44 @@ osc(freq) = rdtable(tablesize, os.sinwaveform(tablesize), int(os.phasor(tablesiz
 with{
     tablesize = 1 << 15; // instead of 1 << 16
 };
-carFreq1 = hslider("freq1", 440, 20, 5000, 0.1);
-carFreq2 = hslider("freq2", 523.25, 20, 5000, 0.1);
-carFreq3 = hslider("freq3", 349.2, 20, 5000, 0.1);
-carFreq4 = hslider("freq4", 587.33, 20, 5000, 0.1);
 
-gate1 = checkbox("gate1");
-gate2 = checkbox("gate2");
-gate3 = checkbox("gate3");
-gate4 = checkbox("gate4");
+kick(pitch, click, attack, decay, drive, gate) = out
+with {
+    env = en.adsr(attack, decay, 0.0, 0.1, gate);
+    pitchenv = en.adsr(0.005, click, 0.0, 0.1, gate);
+    clean = env * osc((1 + pitchenv * 4) * pitch);
+    out = ma.tanh(clean * drive);
+};
 
+freqSynth1 = hslider("freqSynth1", 440, 20, 5000, 0.1);
+freqSynth2 = hslider("freqSynth2", 523.25, 20, 5000, 0.1);
+freqSynth3 = hslider("freqSynth3", 349.2, 20, 5000, 0.1);
+freqSynth4 = hslider("freqSynth4", 587.33, 20, 5000, 0.1);
+freqSynth5 = hslider("freqSynth5", 587.33, 20, 5000, 0.1);
+freqSynth6 = hslider("freqSynth6", 587.33, 20, 5000, 0.1);
+freqSynth7 = hslider("freqSynth7", 587.33, 20, 5000, 0.1);
+
+gateSynth = checkbox("gateSynth");
+gateGuitar = checkbox("gateGuitar");
+gateDrums = checkbox("gateDrums");
+
+gateSynth1 = checkbox("gateSynth1");
+gateSynth2 = checkbox("gateSynth2");
+gateSynth3 = checkbox("gateSynth3");
+gateSynth4 = checkbox("gateSynth4");
+gateSynth5 = checkbox("gateSynth5");
+gateSynth6 = checkbox("gateSynth6");
+gateSynth7 = checkbox("gateSynth7");
+
+gateDrums1 = checkbox("gateDrums1");
+gateDrums2 = checkbox("gateDrums2");
+gateDrums3 = checkbox("gateDrums3");
+gateDrums4 = checkbox("gateDrums4");
+gateDrums5 = checkbox("gateDrums5");
+gateDrums6 = checkbox("gateDrums6");
+
+
+pitch = hslider("pitch", 1, 0.5, 1.5, 0.1);
 
 modFreq1 = hslider("modfreq1", 50, 0.1, 100, 0.1);
 index1 = hslider("index1", 1, 0, 20, 1);
@@ -22,15 +50,46 @@ filter = hslider("filter", 0, 0, 1, 0.01);
 filterFreq = hslider("filterFreq", 10, 0, 400, 0.1);
 
 lowP = fi.lowpass(1, filterFreq);
-gate = checkbox("gate");
 
-polys = osc(carFreq1+osc(modFreq1)*index1) *gate1,
-    osc(carFreq2+osc(modFreq1)*index1)*gate2,
-    osc(carFreq3+osc(modFreq1)*index1)*gate3,
-    osc(carFreq4+osc(modFreq1)*index1)*gate4;
+at = hslider("at", 0, 0, 1, 0.01);
+dt = hslider("dt", 0, 0, 1, 0.01);
+sl = hslider("sl", 0.5, 0, 1, 0.01);
+rt = hslider("rt", 0, 0, 1, 0.01);
+
+envelope = en.adsr(at,dt,sl,rt,gateSynth);
+
+highHat = kick(3000, 0.05, 0.005, 0.005, 5, gateDrums1);
+highHat2 = kick(3000, 0.05, 0.005, 0.005, 5, gateDrums2);
+kick1 = sy.clap(500, 0.001, 0.002, gateDrums3);
+kick2 = sy.clap(500, 0.001, 0.002, gateDrums4);
+clap = kick(200, 0.05, 0.005, 0.005, 5, gateDrums5),
+sy.hat(3170, 18000, 0.05, 0.05, gateDrums5);
+clap2 = kick(200, 0.05, 0.005, 0.005, 5, gateDrums6),
+sy.hat(3170, 18000, 0.05, 0.05, gateDrums6);
+
+synth = osc(freqSynth1*pitch+osc(modFreq1)*index1)*envelope*gateSynth1, 
+    osc(freqSynth2+osc(modFreq1)*index1)*envelope*gateSynth2, 
+    osc(freqSynth3+osc(modFreq1)*index1)*envelope*gateSynth3,
+    osc(freqSynth4+osc(modFreq1)*index1)*envelope*gateSynth4,
+    osc(freqSynth5+osc(modFreq1)*index1)*envelope*gateSynth5,
+    osc(freqSynth6+osc(modFreq1)*index1)*envelope*gateSynth5,
+    osc(freqSynth7+osc(modFreq1)*index1)*envelope*gateSynth5
+    :> _ *gateSynth;
+
+guitar = pm.guitar_ui_MIDI,
+    pm.guitar_ui_MIDI :> _ *gateGuitar;
+
+drums = highHat,
+    highHat2,
+    kick1,
+    kick2,
+    clap,
+    clap2
+    :> _ *gateDrums;
+
+//process = polys0*(mode==0), polys1*(mode==1), polys2*(mode==2);
 
 process = 
-    polys
-    :> _ *gate // merging signals here
-    : lowP;
-    // <: dm.zita_light; // and then splitting them for stereo in
+    synth, guitar, drums :> _;
+     
+effect = dm.zita_light; //multiple voices all go to the same effect line

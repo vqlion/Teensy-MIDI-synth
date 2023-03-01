@@ -9987,22 +9987,24 @@ class mydsp : public dsp {
 	FAUSTFLOAT fCheckbox8;
 	FAUSTFLOAT fHslider9;
 	float fRec58[2];
+	FAUSTFLOAT fCheckbox9;
 	FAUSTFLOAT fHslider10;
 	float fRec59[2];
+	FAUSTFLOAT fCheckbox10;
 	FAUSTFLOAT fHslider11;
 	float fRec60[2];
-	FAUSTFLOAT fCheckbox9;
+	FAUSTFLOAT fCheckbox11;
 	FAUSTFLOAT fHslider12;
 	float fRec61[2];
-	FAUSTFLOAT fCheckbox10;
+	FAUSTFLOAT fCheckbox12;
 	FAUSTFLOAT fHslider13;
 	float fRec62[2];
-	FAUSTFLOAT fCheckbox11;
+	FAUSTFLOAT fCheckbox13;
 	FAUSTFLOAT fHslider14;
 	FAUSTFLOAT fHslider15;
 	float fRec63[2];
-	FAUSTFLOAT fCheckbox12;
-	FAUSTFLOAT fCheckbox13;
+	FAUSTFLOAT fCheckbox14;
+	FAUSTFLOAT fCheckbox15;
 	float fVec10[2];
 	int iRec64[2];
 	FAUSTFLOAT fHslider16;
@@ -10035,7 +10037,7 @@ class mydsp : public dsp {
 		m->declare("filters_lib_iir_author", "Julius O. Smith III");
 		m->declare("filters_lib_iir_copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
 		m->declare("filters_lib_iir_license", "MIT-style STK-4.3 license");
-		m->declare("filters_lib_lowpass0_highpass1", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
+		m->declare("filters_lib_lowpass0_highpass1", "MIT-style STK-4.3 license");
 		m->declare("filters_lib_lowpass0_highpass1_author", "Julius O. Smith III");
 		m->declare("filters_lib_lowpass_author", "Julius O. Smith III");
 		m->declare("filters_lib_lowpass_copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
@@ -10164,17 +10166,19 @@ class mydsp : public dsp {
 		fHslider8 = FAUSTFLOAT(587.33f);
 		fCheckbox8 = FAUSTFLOAT(0.0f);
 		fHslider9 = FAUSTFLOAT(587.33f);
-		fHslider10 = FAUSTFLOAT(587.33f);
-		fHslider11 = FAUSTFLOAT(587.33f);
 		fCheckbox9 = FAUSTFLOAT(0.0f);
-		fHslider12 = FAUSTFLOAT(349.2f);
+		fHslider10 = FAUSTFLOAT(587.33f);
 		fCheckbox10 = FAUSTFLOAT(0.0f);
-		fHslider13 = FAUSTFLOAT(523.25f);
+		fHslider11 = FAUSTFLOAT(587.33f);
 		fCheckbox11 = FAUSTFLOAT(0.0f);
+		fHslider12 = FAUSTFLOAT(349.2f);
+		fCheckbox12 = FAUSTFLOAT(0.0f);
+		fHslider13 = FAUSTFLOAT(523.25f);
+		fCheckbox13 = FAUSTFLOAT(0.0f);
 		fHslider14 = FAUSTFLOAT(4.4e+02f);
 		fHslider15 = FAUSTFLOAT(1.0f);
-		fCheckbox12 = FAUSTFLOAT(0.0f);
-		fCheckbox13 = FAUSTFLOAT(0.0f);
+		fCheckbox14 = FAUSTFLOAT(0.0f);
+		fCheckbox15 = FAUSTFLOAT(0.0f);
 		fHslider16 = FAUSTFLOAT(0.0f);
 		fHslider17 = FAUSTFLOAT(0.0f);
 		fHslider18 = FAUSTFLOAT(0.0f);
@@ -10399,12 +10403,14 @@ class mydsp : public dsp {
 		ui_interface->addCheckButton("gateDrums5", &fCheckbox1);
 		ui_interface->addCheckButton("gateDrums6", &fCheckbox0);
 		ui_interface->addCheckButton("gateGuitar", &fCheckbox7);
-		ui_interface->addCheckButton("gateSynth", &fCheckbox13);
-		ui_interface->addCheckButton("gateSynth1", &fCheckbox12);
-		ui_interface->addCheckButton("gateSynth2", &fCheckbox11);
-		ui_interface->addCheckButton("gateSynth3", &fCheckbox10);
-		ui_interface->addCheckButton("gateSynth4", &fCheckbox9);
-		ui_interface->addCheckButton("gateSynth5", &fCheckbox8);
+		ui_interface->addCheckButton("gateSynth", &fCheckbox15);
+		ui_interface->addCheckButton("gateSynth1", &fCheckbox14);
+		ui_interface->addCheckButton("gateSynth2", &fCheckbox13);
+		ui_interface->addCheckButton("gateSynth3", &fCheckbox12);
+		ui_interface->addCheckButton("gateSynth4", &fCheckbox11);
+		ui_interface->addCheckButton("gateSynth5", &fCheckbox10);
+		ui_interface->addCheckButton("gateSynth6", &fCheckbox9);
+		ui_interface->addCheckButton("gateSynth7", &fCheckbox8);
 		ui_interface->openVerticalBox("guitar");
 		ui_interface->declare(0, "0", "");
 		ui_interface->openHorizontalBox("midi");
@@ -10469,22 +10475,24 @@ class mydsp : public dsp {
 		float fSlow25 = float(fHslider8);
 		float fSlow26 = float(fCheckbox8);
 		float fSlow27 = float(fHslider9);
-		float fSlow28 = float(fHslider10);
-		float fSlow29 = float(fHslider11);
-		float fSlow30 = float(fCheckbox9);
-		float fSlow31 = float(fHslider12);
-		float fSlow32 = float(fCheckbox10);
-		float fSlow33 = float(fHslider13);
-		float fSlow34 = float(fCheckbox11);
-		float fSlow35 = float(fHslider15) * float(fHslider14);
-		float fSlow36 = float(fCheckbox12);
-		float fSlow37 = float(fCheckbox13);
-		int iSlow38 = fSlow37 == 0.0f;
-		float fSlow39 = 1.0f / std::max<float>(1.0f, fConst0 * float(fHslider16));
-		float fSlow40 = std::max<float>(1.0f, fConst0 * float(fHslider17));
-		float fSlow41 = 1.0f / fSlow40;
-		float fSlow42 = float(fHslider19);
-		float fSlow43 = (1.0f - fSlow42) / std::max<float>(1.0f, fConst0 * float(fHslider18));
+		float fSlow28 = float(fCheckbox9);
+		float fSlow29 = float(fHslider10);
+		float fSlow30 = float(fCheckbox10);
+		float fSlow31 = float(fHslider11);
+		float fSlow32 = float(fCheckbox11);
+		float fSlow33 = float(fHslider12);
+		float fSlow34 = float(fCheckbox12);
+		float fSlow35 = float(fHslider13);
+		float fSlow36 = float(fCheckbox13);
+		float fSlow37 = float(fHslider15) * float(fHslider14);
+		float fSlow38 = float(fCheckbox14);
+		float fSlow39 = float(fCheckbox15);
+		int iSlow40 = fSlow39 == 0.0f;
+		float fSlow41 = 1.0f / std::max<float>(1.0f, fConst0 * float(fHslider16));
+		float fSlow42 = std::max<float>(1.0f, fConst0 * float(fHslider17));
+		float fSlow43 = 1.0f / fSlow42;
+		float fSlow44 = float(fHslider19);
+		float fSlow45 = (1.0f - fSlow44) / std::max<float>(1.0f, fConst0 * float(fHslider18));
 		for (int i0 = 0; i0 < count; i0 = i0 + 1) {
 			fVec1[0] = fSlow0;
 			fRec2[0] = fSlow0 + fRec2[1] * float(fVec1[1] >= fSlow0);
@@ -10634,20 +10642,20 @@ class mydsp : public dsp {
 			fRec56[0] = fTemp79 - std::floor(fTemp79);
 			float fTemp80 = fRec58[1] + fConst37 * (fSlow27 + fTemp78);
 			fRec58[0] = fTemp80 - std::floor(fTemp80);
-			float fTemp81 = fRec59[1] + fConst37 * (fSlow28 + fTemp78);
+			float fTemp81 = fRec59[1] + fConst37 * (fSlow29 + fTemp78);
 			fRec59[0] = fTemp81 - std::floor(fTemp81);
-			float fTemp82 = fRec60[1] + fConst37 * (fSlow29 + fTemp78);
+			float fTemp82 = fRec60[1] + fConst37 * (fSlow31 + fTemp78);
 			fRec60[0] = fTemp82 - std::floor(fTemp82);
-			float fTemp83 = fRec61[1] + fConst37 * (fSlow31 + fTemp78);
+			float fTemp83 = fRec61[1] + fConst37 * (fSlow33 + fTemp78);
 			fRec61[0] = fTemp83 - std::floor(fTemp83);
-			float fTemp84 = fRec62[1] + fConst37 * (fSlow33 + fTemp78);
+			float fTemp84 = fRec62[1] + fConst37 * (fSlow35 + fTemp78);
 			fRec62[0] = fTemp84 - std::floor(fTemp84);
-			float fTemp85 = fRec63[1] + fConst37 * (fSlow35 + fTemp78);
+			float fTemp85 = fRec63[1] + fConst37 * (fSlow37 + fTemp78);
 			fRec63[0] = fTemp85 - std::floor(fTemp85);
-			fVec10[0] = fSlow37;
-			iRec64[0] = iSlow38 * (iRec64[1] + 1);
-			fRec65[0] = fSlow37 + fRec65[1] * float(fVec10[1] >= fSlow37);
-			output0[i0] = FAUSTFLOAT(fSlow37 * std::max<float>(0.0f, std::min<float>(fSlow41 * fRec65[0], std::max<float>(fSlow43 * (fSlow40 - fRec65[0]) + 1.0f, fSlow42)) * (1.0f - fSlow39 * float(iRec64[0]))) * (fSlow36 * ftbl0mydspSIG0[int(32768.0f * fRec63[0])] + fSlow34 * ftbl0mydspSIG0[int(32768.0f * fRec62[0])] + fSlow32 * ftbl0mydspSIG0[int(32768.0f * fRec61[0])] + fSlow30 * ftbl0mydspSIG0[int(32768.0f * fRec60[0])] + fSlow26 * ftbl0mydspSIG0[int(32768.0f * fRec59[0])] + fSlow26 * ftbl0mydspSIG0[int(32768.0f * fRec58[0])] + fSlow26 * ftbl0mydspSIG0[int(32768.0f * fRec56[0])]) + fSlow22 * fRec24 + fSlow12 * (fConst28 * (fRec20[2] + fRec20[0] + 2.0f * fRec20[1]) * (std::max<float>(0.0f, fTemp4 * std::min<float>(fTemp16, std::max<float>(2.0f - fTemp16, 0.0f))) + std::max<float>(0.0f, fTemp1 * std::min<float>(fTemp15, std::max<float>(2.0f - fTemp15, 0.0f)))) + tanhf(5.0f * std::max<float>(0.0f, std::min<float>(fTemp12, std::max<float>(2.0f - fTemp12, 0.0f)) * fTemp13) * ftbl0mydspSIG0[int(32768.0f * fRec17[0])]) + tanhf(5.0f * std::max<float>(0.0f, std::min<float>(fTemp9, std::max<float>(2.0f - fTemp9, 0.0f)) * fTemp10) * ftbl0mydspSIG0[int(32768.0f * fRec14[0])]) + tanhf(fConst10 * (fRec11[2] + fRec11[0] + 2.0f * fRec11[1])) + tanhf(fConst10 * (fRec7[2] + fRec7[0] + 2.0f * fRec7[1])) + tanhf(5.0f * std::max<float>(0.0f, std::min<float>(fTemp3, std::max<float>(2.0f - fTemp3, 0.0f)) * fTemp4) * ftbl0mydspSIG0[int(32768.0f * fRec4[0])]) + tanhf(5.0f * std::max<float>(0.0f, std::min<float>(fTemp0, std::max<float>(2.0f - fTemp0, 0.0f)) * fTemp1) * ftbl0mydspSIG0[int(32768.0f * fRec1[0])])));
+			fVec10[0] = fSlow39;
+			iRec64[0] = iSlow40 * (iRec64[1] + 1);
+			fRec65[0] = fSlow39 + fRec65[1] * float(fVec10[1] >= fSlow39);
+			output0[i0] = FAUSTFLOAT(fSlow39 * std::max<float>(0.0f, std::min<float>(fSlow43 * fRec65[0], std::max<float>(fSlow45 * (fSlow42 - fRec65[0]) + 1.0f, fSlow44)) * (1.0f - fSlow41 * float(iRec64[0]))) * (fSlow38 * ftbl0mydspSIG0[int(32768.0f * fRec63[0])] + fSlow36 * ftbl0mydspSIG0[int(32768.0f * fRec62[0])] + fSlow34 * ftbl0mydspSIG0[int(32768.0f * fRec61[0])] + fSlow32 * ftbl0mydspSIG0[int(32768.0f * fRec60[0])] + fSlow30 * ftbl0mydspSIG0[int(32768.0f * fRec59[0])] + fSlow28 * ftbl0mydspSIG0[int(32768.0f * fRec58[0])] + fSlow26 * ftbl0mydspSIG0[int(32768.0f * fRec56[0])]) + fSlow22 * fRec24 + fSlow12 * (fConst28 * (fRec20[2] + fRec20[0] + 2.0f * fRec20[1]) * (std::max<float>(0.0f, fTemp4 * std::min<float>(fTemp16, std::max<float>(2.0f - fTemp16, 0.0f))) + std::max<float>(0.0f, fTemp1 * std::min<float>(fTemp15, std::max<float>(2.0f - fTemp15, 0.0f)))) + tanhf(5.0f * std::max<float>(0.0f, std::min<float>(fTemp12, std::max<float>(2.0f - fTemp12, 0.0f)) * fTemp13) * ftbl0mydspSIG0[int(32768.0f * fRec17[0])]) + tanhf(5.0f * std::max<float>(0.0f, std::min<float>(fTemp9, std::max<float>(2.0f - fTemp9, 0.0f)) * fTemp10) * ftbl0mydspSIG0[int(32768.0f * fRec14[0])]) + tanhf(fConst10 * (fRec11[2] + fRec11[0] + 2.0f * fRec11[1])) + tanhf(fConst10 * (fRec7[2] + fRec7[0] + 2.0f * fRec7[1])) + tanhf(5.0f * std::max<float>(0.0f, std::min<float>(fTemp3, std::max<float>(2.0f - fTemp3, 0.0f)) * fTemp4) * ftbl0mydspSIG0[int(32768.0f * fRec4[0])]) + tanhf(5.0f * std::max<float>(0.0f, std::min<float>(fTemp0, std::max<float>(2.0f - fTemp0, 0.0f)) * fTemp1) * ftbl0mydspSIG0[int(32768.0f * fRec1[0])])));
 			fVec1[1] = fVec1[0];
 			fRec2[1] = fRec2[0];
 			iRec3[1] = iRec3[0];
@@ -10724,7 +10732,7 @@ class mydsp : public dsp {
 	#define FAUST_COMPILATION_OPIONS "-a /usr/local/share/faust/teensy/teensy.cpp -lang cpp -i -es 1 -mcd 16 -uim -single -ftz 0"
 	#define FAUST_INPUTS 0
 	#define FAUST_OUTPUTS 1
-	#define FAUST_ACTIVES 35
+	#define FAUST_ACTIVES 37
 	#define FAUST_PASSIVES 0
 
 	FAUST_ADDHORIZONTALSLIDER("at", fHslider17, 0.0f, 0.0f, 1.0f, 0.01f);
@@ -10744,12 +10752,14 @@ class mydsp : public dsp {
 	FAUST_ADDCHECKBOX("gateDrums5", fCheckbox1);
 	FAUST_ADDCHECKBOX("gateDrums6", fCheckbox0);
 	FAUST_ADDCHECKBOX("gateGuitar", fCheckbox7);
-	FAUST_ADDCHECKBOX("gateSynth", fCheckbox13);
-	FAUST_ADDCHECKBOX("gateSynth1", fCheckbox12);
-	FAUST_ADDCHECKBOX("gateSynth2", fCheckbox11);
-	FAUST_ADDCHECKBOX("gateSynth3", fCheckbox10);
-	FAUST_ADDCHECKBOX("gateSynth4", fCheckbox9);
-	FAUST_ADDCHECKBOX("gateSynth5", fCheckbox8);
+	FAUST_ADDCHECKBOX("gateSynth", fCheckbox15);
+	FAUST_ADDCHECKBOX("gateSynth1", fCheckbox14);
+	FAUST_ADDCHECKBOX("gateSynth2", fCheckbox13);
+	FAUST_ADDCHECKBOX("gateSynth3", fCheckbox12);
+	FAUST_ADDCHECKBOX("gateSynth4", fCheckbox11);
+	FAUST_ADDCHECKBOX("gateSynth5", fCheckbox10);
+	FAUST_ADDCHECKBOX("gateSynth6", fCheckbox9);
+	FAUST_ADDCHECKBOX("gateSynth7", fCheckbox8);
 	FAUST_ADDHORIZONTALSLIDER("guitar/[0]midi/freq", fHslider2, 4.4e+02f, 5e+01f, 1e+03f, 0.01f);
 	FAUST_ADDHORIZONTALSLIDER("guitar/[0]midi/bend", fHslider1, 0.0f, -2.0f, 2.0f, 0.01f);
 	FAUST_ADDHORIZONTALSLIDER("guitar/[0]midi/gain", fHslider4, 0.8f, 0.0f, 1.0f, 0.01f);
@@ -10781,12 +10791,14 @@ class mydsp : public dsp {
 		p(CHECKBOX, gateDrums5, "gateDrums5", fCheckbox1, 0.0f, 0.0f, 1.0f, 1.0f) \
 		p(CHECKBOX, gateDrums6, "gateDrums6", fCheckbox0, 0.0f, 0.0f, 1.0f, 1.0f) \
 		p(CHECKBOX, gateGuitar, "gateGuitar", fCheckbox7, 0.0f, 0.0f, 1.0f, 1.0f) \
-		p(CHECKBOX, gateSynth, "gateSynth", fCheckbox13, 0.0f, 0.0f, 1.0f, 1.0f) \
-		p(CHECKBOX, gateSynth1, "gateSynth1", fCheckbox12, 0.0f, 0.0f, 1.0f, 1.0f) \
-		p(CHECKBOX, gateSynth2, "gateSynth2", fCheckbox11, 0.0f, 0.0f, 1.0f, 1.0f) \
-		p(CHECKBOX, gateSynth3, "gateSynth3", fCheckbox10, 0.0f, 0.0f, 1.0f, 1.0f) \
-		p(CHECKBOX, gateSynth4, "gateSynth4", fCheckbox9, 0.0f, 0.0f, 1.0f, 1.0f) \
-		p(CHECKBOX, gateSynth5, "gateSynth5", fCheckbox8, 0.0f, 0.0f, 1.0f, 1.0f) \
+		p(CHECKBOX, gateSynth, "gateSynth", fCheckbox15, 0.0f, 0.0f, 1.0f, 1.0f) \
+		p(CHECKBOX, gateSynth1, "gateSynth1", fCheckbox14, 0.0f, 0.0f, 1.0f, 1.0f) \
+		p(CHECKBOX, gateSynth2, "gateSynth2", fCheckbox13, 0.0f, 0.0f, 1.0f, 1.0f) \
+		p(CHECKBOX, gateSynth3, "gateSynth3", fCheckbox12, 0.0f, 0.0f, 1.0f, 1.0f) \
+		p(CHECKBOX, gateSynth4, "gateSynth4", fCheckbox11, 0.0f, 0.0f, 1.0f, 1.0f) \
+		p(CHECKBOX, gateSynth5, "gateSynth5", fCheckbox10, 0.0f, 0.0f, 1.0f, 1.0f) \
+		p(CHECKBOX, gateSynth6, "gateSynth6", fCheckbox9, 0.0f, 0.0f, 1.0f, 1.0f) \
+		p(CHECKBOX, gateSynth7, "gateSynth7", fCheckbox8, 0.0f, 0.0f, 1.0f, 1.0f) \
 		p(HORIZONTALSLIDER, freq, "guitar/[0]midi/freq", fHslider2, 4.4e+02f, 5e+01f, 1e+03f, 0.01f) \
 		p(HORIZONTALSLIDER, bend, "guitar/[0]midi/bend", fHslider1, 0.0f, -2.0f, 2.0f, 0.01f) \
 		p(HORIZONTALSLIDER, gain, "guitar/[0]midi/gain", fHslider4, 0.8f, 0.0f, 1.0f, 0.01f) \
