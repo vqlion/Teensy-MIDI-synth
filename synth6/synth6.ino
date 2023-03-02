@@ -70,7 +70,7 @@ void setup()
   dsp.setParamValue("gateSynth", 1);
   dsp.setParamValue("gateDrums", 1);
   dsp.setParamValue("gateGuitar", 1);
-  dsp.setParamValue("outGain", 1);
+  dsp.setParamValue("gain", 1);
   dsp.setParamValue("sl", 0.1);
   dsp.setParamValue("filterFreq", 1000);
   for (int i = 0; i < MIDI_RANGE; i++)
@@ -245,7 +245,7 @@ void processMIDI(byte type, byte data1, byte data2)
       dsp.setParamValue("gainDrums", mapfloat(inputValue, 0, 127, 0, 1));
       break;
     case 19:
-      dsp.setParamValue("gainGuitar", mapfloat(inputValue, 0, 127, 0, 1));
+      dsp.setParamValue("gainGuitar", mapfloat(inputValue, 0, 127, 0, 2));
       break;
     case 74:
       dsp.setParamValue("filterFreq", mapfloat(inputValue, 0, 127, 500, 5000));
@@ -269,22 +269,53 @@ void processMIDI(byte type, byte data1, byte data2)
       dsp.setParamValue("index1", mapfloat(inputValue, 0, 127, 0, 20));
       break;
     case 1:
-      if (instrumentPlaying == 0)
-      {
-        dsp.setParamValue("pitch", mapfloat(inputValue, 0, 127, 0.1, 2));
-      }
-      else if (instrumentPlaying == 2)
-      {
-
-        dsp.setParamValue("bend", mapfloat(inputValue, 0, 127, -2, 2));
-      }
+      dsp.setParamValue("filterFreq", mapfloat(inputValue, 0, 127, 500, 5000));
       break;
     case 71:
-      dsp.setParamValue("pluckPosition", mapfloat(inputValue, 0, 127, 0, 1));
+      dsp.setParamValue("damping", mapfloat(inputValue, 0, 127, 0, 1));
       break;
-
+    case 81:
+      dsp.setParamValue("kickDecay", mapfloat(inputValue, 0, 127, 0.1, 1));
+      break;
+    case 80:
+      dsp.setParamValue("kickClick", mapfloat(inputValue, 0, 127, 0.005, 0.1));
+      break;
+    case 85:
+      dsp.setParamValue("globalGain", mapfloat(inputValue, 0, 127, 0, 2));
+      break;
+  
     default:
       break;
+    }
+  }
+  else if (type == usbMIDI.PitchBend)
+  {
+    int pitch1, pitch2;
+    pitch1 = int(data1);
+    pitch2 = int(data2);
+    int pitch = pitch1 + pitch2 * 128;
+    Serial.println(pitch);
+    if (instrumentPlaying == 0)
+    {
+      if (pitch == 8192)
+      {
+        dsp.setParamValue("pitch", 1);
+      }
+      else
+      {
+        dsp.setParamValue("pitch", mapfloat(pitch, 0, 16383, 0.1, 2));
+      }
+    }
+    else if (instrumentPlaying == 2)
+    {
+      if (pitch == 8192)
+      {
+        dsp.setParamValue("bend", 0);
+      }
+      else
+      {
+        dsp.setParamValue("bend", mapfloat(pitch, 0, 16383, -2, 2));
+      }
     }
   }
 }

@@ -1,5 +1,4 @@
 import("stdfaust.lib");
-// freqs and gains definitions go here
 osc(freq) = rdtable(tablesize, os.sinwaveform(tablesize), int(os.phasor(tablesize,freq)))
 with{
     tablesize = 1 << 15; // instead of 1 << 16
@@ -54,6 +53,8 @@ gainSynth = hslider("gainSynth", 0.5, 0, 1, 0.01);
 gainDrums = hslider("gainDrums", 0.5, 0, 1, 0.01);
 gainGuitar = hslider("gainGuitar", 0.5, 0, 1, 0.01);
 
+globalGain = hslider("globalGain", 1, 0, 2, 0.1);
+
 pitch = hslider("pitch", 1, 0.5, 1.5, 0.1);
 
 modFreq1 = hslider("modfreq1", 50, 0.1, 100, 0.1);
@@ -81,7 +82,6 @@ kick2 = kick(40, kickClick, 0.005, kickDecay, 5, gateDrums4);
 clap = sy.clap(3500, 0.001, 0.05, gateDrums5);
 clap2 = sy.clap(3500, 0.001, 0.05, gateDrums6);
 
-//lowpass to add!
 synth = os.saw2ptr(freqSynth1*pitch+osc(modFreq1)*index1)*envelope(gateSynth1), 
     os.saw2ptr(freqSynth2*pitch+osc(modFreq1)*index1)*envelope(gateSynth2), 
     os.saw2ptr(freqSynth3*pitch+osc(modFreq1)*index1)*envelope(gateSynth3),
@@ -106,9 +106,5 @@ drums = highHat,
     clap2
     :> _ *gateDrums*gainDrums;
 
-//process = polys0*(mode==0), polys1*(mode==1), polys2*(mode==2);
-
 process = 
-    synth, guitar, drums :> _;
-     
-effect = dm.zita_light; //multiple voices all go to the same effect line
+    synth, guitar, drums :> _ * globalGain;
