@@ -206,34 +206,27 @@ void processMIDI(byte type, byte data1, byte data2)
       }
       break;
     case 21:
-      if (inputValue != 0)
+      loop1_index = 0;
+      if (loop1Playing)
       {
-        loop1_index = 0;
-        if (loop1Playing)
-        {
-          loop1Playing = false;
-          dsp.setParamValue("gateSynthLoop2", 0);
-        }
-        else
-        {
-          loop1Playing = true;
-        }
+        loop1Playing = false;
+        dsp.setParamValue("gateSynthLoop2", 0);
+      }
+      else
+      {
+        loop1Playing = true;
       }
       break;
     case 25:
-      if (inputValue != 0)
+      loop2_index = 0;
+      if (loop2Playing)
       {
-
-        loop2_index = 0;
-        if (loop2Playing)
-        {
-          loop2Playing = false;
-          dsp.setParamValue("gateSynthLoop3", 0);
-        }
-        else
-        {
-          loop2Playing = true;
-        }
+        loop2Playing = false;
+        dsp.setParamValue("gateSynthLoop3", 0);
+      }
+      else
+      {
+        loop2Playing = true;
       }
       break;
     case 52:
@@ -359,13 +352,13 @@ void recordLoop(int index)
       }
       else if (type == usbMIDI.ControlChange)
       {
-        if (index == 0 && int(data1) == 20 && int(data2) != 0)
+        if (index == 0 && int(data1) == 20 && int(data2) == 0)
         {
           Serial.println("stop");
           recording1_size = record_index;
           recording = false;
         }
-        else if (index == 1 && int(data1) == 24 && int(data2) != 0)
+        else if (index == 1 && int(data1) == 24 && int(data2) == 0)
         {
           Serial.println("stop");
           recording2_size = record_index;
@@ -410,6 +403,7 @@ void recordLoop(int index)
     }
     else
     {
+      dsp.setParamValue("gateSynthLoop1", 0);
       if (index == 0)
       {
         record1[record_index] = -1;
