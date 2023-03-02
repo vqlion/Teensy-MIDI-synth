@@ -2,7 +2,7 @@
 #include "myDsp.h"
 
 const int MIDI_RANGE = 128;
-const int POLY_RANGE = 4;
+const int POLY_RANGE = 6;
 const int RECORD_RANGE = 4800;
 const int DELAY_VALUE = 5;
 
@@ -25,14 +25,12 @@ char freq3[32] = "freqSynth3";
 char freq4[32] = "freqSynth4";
 char freq5[32] = "freqSynth5";
 char freq6[32] = "freqSynth6";
-char freq7[32] = "freqSynth7";
 char gate1[32] = "gateSynth1";
 char gate2[32] = "gateSynth2";
 char gate3[32] = "gateSynth3";
 char gate4[32] = "gateSynth4";
 char gate5[32] = "gateSynth5";
 char gate6[32] = "gateSynth6";
-char gate7[32] = "gateSynth7";
 char *freqs[POLY_RANGE];
 char *gates[POLY_RANGE];
 int record1[RECORD_RANGE];
@@ -57,10 +55,14 @@ void setup()
   freqs[1] = freq2;
   freqs[2] = freq3;
   freqs[3] = freq4;
+  freqs[4] = freq5;
+  freqs[5] = freq6;
   gates[0] = gate1;
   gates[1] = gate2;
   gates[2] = gate3;
   gates[3] = gate4;
+  gates[4] = gate5;
+  gates[5] = gate6;
   polyphonic = true;
   recording1_size = 0;
   recording2_size = 0;
@@ -210,7 +212,7 @@ void processMIDI(byte type, byte data1, byte data2)
         if (loop1Playing)
         {
           loop1Playing = false;
-          dsp.setParamValue("gateSynth5", 0);
+          dsp.setParamValue("gateSynthLoop2", 0);
         }
         else
         {
@@ -226,7 +228,7 @@ void processMIDI(byte type, byte data1, byte data2)
         if (loop2Playing)
         {
           loop2Playing = false;
-          dsp.setParamValue("gateSynth6", 0);
+          dsp.setParamValue("gateSynthLoop3", 0);
         }
         else
         {
@@ -274,13 +276,15 @@ void processMIDI(byte type, byte data1, byte data2)
       dsp.setParamValue("index1", mapfloat(inputValue, 0, 127, 0, 20));
       break;
     case 1:
-    if (instrumentPlaying == 0) {
-      dsp.setParamValue("pitch", mapfloat(inputValue, 0, 127, 0.1, 2));
+      if (instrumentPlaying == 0)
+      {
+        dsp.setParamValue("pitch", mapfloat(inputValue, 0, 127, 0.1, 2));
+      }
+      else if (instrumentPlaying == 2)
+      {
 
-    } else if (instrumentPlaying == 2) {
-
-      dsp.setParamValue("bend", mapfloat(inputValue, 0, 127, -2, 2));
-    }
+        dsp.setParamValue("bend", mapfloat(inputValue, 0, 127, -2, 2));
+      }
       break;
     case 71:
       dsp.setParamValue("pluckPosition", mapfloat(inputValue, 0, 127, 0, 1));
@@ -374,8 +378,8 @@ void recordLoop(int index)
       if (instrumentPlaying == 0)
       {
         float frequency = getFrequencyFromMidi(currentNotePlaying);
-        dsp.setParamValue("freqSynth7", frequency);
-        dsp.setParamValue("gateSynth7", 1);
+        dsp.setParamValue("freqSynthLoop1", frequency);
+        dsp.setParamValue("gateSynthLoop1", 1);
       }
       else if (instrumentPlaying == 1)
       {
@@ -419,7 +423,7 @@ void recordLoop(int index)
     delay(DELAY_VALUE);
     record_index++;
   }
-  dsp.setParamValue("gateSynth7", 0);
+  dsp.setParamValue("gateSynthLoop1", 0);
 }
 
 void playLoop(int index)
@@ -433,8 +437,8 @@ void playLoop(int index)
       if (instrumentsOnLoops[0] == 0)
       {
         float frequency = getFrequencyFromMidi(midiNote);
-        dsp.setParamValue("freqSynth5", frequency);
-        dsp.setParamValue("gateSynth5", 1);
+        dsp.setParamValue("freqSynthLoop2", frequency);
+        dsp.setParamValue("gateSynthLoop2", 1);
       }
       else if (instrumentsOnLoops[0] == 1)
       {
@@ -456,7 +460,7 @@ void playLoop(int index)
     }
     else
     {
-      dsp.setParamValue("gateSynth5", 0);
+      dsp.setParamValue("gateSynthLoop2", 0);
     }
   }
   else if (index == 1)
@@ -464,13 +468,33 @@ void playLoop(int index)
     int midiNote = record2[loop2_index];
     if (midiNote != -1)
     {
-      float frequency = getFrequencyFromMidi(midiNote);
-      dsp.setParamValue("freqSynth6", frequency);
-      dsp.setParamValue("gateSynth6", 1);
+      if (instrumentsOnLoops[1] == 0)
+      {
+        float frequency = getFrequencyFromMidi(midiNote);
+        dsp.setParamValue("freqSynthLoop3", frequency);
+        dsp.setParamValue("gateSynthLoop3", 1);
+      }
+      else if (instrumentsOnLoops[1] == 1)
+      {
+        switch (midiNote)
+        {
+        case 60:
+          dsp.setParamValue("gateDrums4", 1);
+          break;
+        case 62:
+          dsp.setParamValue("gateDrums6", 1);
+          break;
+        case 64:
+          dsp.setParamValue("gateDrums2", 1);
+          break;
+        default:
+          break;
+        }
+      }
     }
     else
     {
-      dsp.setParamValue("gateSynth6", 0);
+      dsp.setParamValue("gateSynthLoop3", 0);
     }
   }
 }
