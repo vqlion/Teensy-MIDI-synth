@@ -11,6 +11,7 @@ with {
     clean = env * osc((1 + pitchenv * 4) * pitch);
     out = ma.tanh(clean * drive);
 };
+//those two redefinitions were required so the code actually fit on the teensy
 
 freqSynth1 = hslider("freqSynth1", 440, 20, 5000, 0.1);
 freqSynth2 = hslider("freqSynth2", 523.25, 20, 5000, 0.1);
