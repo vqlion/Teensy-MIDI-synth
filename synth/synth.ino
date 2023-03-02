@@ -14,7 +14,7 @@
 
   Authors: 2023 Valentin JOSSIC & Sofia EL KHALIFI, feel free to reuse for whatever reason
 
-  https://github.com/vqlion/Teensy-sound-project
+  https://github.com/vqlion/Teensy-MIDI-synth
 */
 
 const int MIDI_RANGE = 128;
